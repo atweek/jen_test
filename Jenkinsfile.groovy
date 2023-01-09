@@ -42,7 +42,7 @@ pipeline {
 			}
 			else
 			{
-				size = "s-1vcpu-0.5gb"
+				size = "s-1vcpu-512mb-10gb"
 			}
 			sh """
 				doctl compute droplet create --region ${params.location} --image ubuntu-22-04-x64 --size ${size} jen-auto
