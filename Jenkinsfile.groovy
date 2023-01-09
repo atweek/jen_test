@@ -5,7 +5,7 @@ pipeline {
 
 	choice(name: 'size', choices: ["1 CPU 1 GB","1 CPU 0.5 GB"], description: 'A slug indicating the size of the Droplet')
 
-	string(name: 'time', description: 'Через сколько удвлить машину?()')
+	string(name: 'time', description: 'Через сколько удвлить машину?(минуты)')
     }
     stages {
         stage('auth') {
@@ -45,7 +45,13 @@ pipeline {
 				size = "s-1vcpu-512mb-10gb"
 			}
 			sh """
+				whoami
 				doctl compute droplet create --region ${params.location} --image ubuntu-22-04-x64 --size ${size} jen-auto
+			"""
+			sleep time: "2", unit: 'MINUTES'
+			sh """"
+				echo "my Ip "
+				doctl compute droplet get --template {{.PublicIPv4}} jen-auto
 			"""
                  }//script
 	     }//steps
