@@ -60,14 +60,7 @@ pipeline {
                  }//script
 	     }//steps
         }//stage
-	 stage('wait') {
-            steps {
-	         script {
-			sleep time: "${params.time}", unit: 'MINUTES'	
-                 }//script
-             }//steps
-        }//stage
-        stage('install wg') {
+         stage('install wg') {
             steps {
 	         script {
 			def ip = "doctl compute droplet get --template {{.PublicIPv4}} jen-auto".execute() 
@@ -77,6 +70,14 @@ pipeline {
                  }//script
              }//steps
         }//stage
+	stage('wait') {
+            steps {
+	         script {
+			sleep time: "${params.time}", unit: 'MINUTES'	
+                 }//script
+             }//steps
+        }//stage
+
         stage('remove') {
             steps {
 	         script {
