@@ -48,7 +48,7 @@ pipeline {
 			}
 			sh """
 				whoami
-				doctl compute droplet create --region ${params.location} --image ubuntu-22-04-x64 --ssh-keys ${SSH}--size ${size} jen-auto
+				doctl compute droplet create --region ${params.location} --image ubuntu-22-04-x64 --ssh-keys ${SSH} --size ${size} jen-auto
 			"""
 			sleep time: "2", unit: 'MINUTES'
 			//sh """"
