@@ -22,9 +22,11 @@ pipeline {
 	     }//steps
         }//stage
 	stage('create VM') {
+	    environment {
+                SSH = credentials('f8b2e7f9-09a7-4c3d-a0ec-a3e779bfd293')
+	    }//env
             steps {
                 script {
-			echo "create"
 		//NYC1   New York City, United States   nyc1
 		//NYC3   New York City, United States   nyc3
 		//AMS3   Amsterdam, the Netherlands   ams3
@@ -46,13 +48,15 @@ pipeline {
 			}
 			sh """
 				whoami
-				doctl compute droplet create --region ${params.location} --image ubuntu-22-04-x64 --size ${size} jen-auto
+				doctl compute droplet create --region ${params.location} --image ubuntu-22-04-x64 --ssh-keys ${SSH}--size ${size} jen-auto
 			"""
 			sleep time: "2", unit: 'MINUTES'
-			sh """"
-				echo "my Ip "
-				doctl compute droplet get --template {{.PublicIPv4}} jen-auto
-			"""
+			//sh """"
+			//	echo "my Ip "
+			//	function test {
+			//	doctl compute droplet get --template \{\{.PublicIPv4\}\} jen-auto
+			//	}
+			//"""
                  }//script
 	     }//steps
         }//stage
@@ -60,6 +64,16 @@ pipeline {
             steps {
 	         script {
 			sleep time: "${params.time}", unit: 'MINUTES'	
+                 }//script
+             }//steps
+        }//stage
+        stage('install wg') {
+            steps {
+	         script {
+			def ip = "doctl compute droplet get --template {{.PublicIPv4}} jen-auto".execute() 
+			sh """
+				ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -l root ${ip.text} "pwd; ls"
+			"""
                  }//script
              }//steps
         }//stage
